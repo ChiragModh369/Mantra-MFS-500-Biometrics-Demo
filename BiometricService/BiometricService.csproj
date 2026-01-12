@@ -1,0 +1,45 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
+    <PackageReference Include="System.Drawing.Common" Version="10.0.1" />
+    <PackageReference Include="System.Resources.Extensions" Version="10.0.1" />
+  </ItemGroup>
+
+  <!-- Windows Desktop framework for System.Windows.Forms support -->
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.WindowsDesktop.App" />
+  </ItemGroup>
+
+  <!-- Mantra MorFin_Auth SDK Reference -->
+  <ItemGroup>
+    <Reference Include="MorFin_Auth">
+      <HintPath>MorFin_Auth_DotNet_SDK_1.1.0.0\lib\MorFin_Auth.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  <!-- Exclude SDK sample code from compilation -->
+  <ItemGroup>
+    <Compile Remove="MorFin_Auth_DotNet_SDK_1.1.0.0\**" />
+    <EmbeddedResource Remove="MorFin_Auth_DotNet_SDK_1.1.0.0\**" />
+    <None Remove="MorFin_Auth_DotNet_SDK_1.1.0.0\**" />
+  </ItemGroup>
+
+  <!-- Copy native Mantra SDK DLLs to output directory -->
+  <ItemGroup>
+    <None Include="C:\Program Files\Mantra\MorFin\Driver\MorFinAuthTest\Morfin_Auth_Core.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="C:\Program Files\Mantra\MorFin\Driver\MorFinAuthTest\iengine_ansi_iso.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  
+</Project>

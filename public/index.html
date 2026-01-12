@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Professional biometric fingerprint management system using MANTRA MFS500 device"
+    />
+    <title>Biometric Fingerprint Management System</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="/css/styles.css" />
+  </head>
+  <body>
+    <!-- Alert Container -->
+    <div
+      id="alertContainer"
+      style="
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 1000;
+        min-width: 350px;
+      "
+    ></div>
+
+    <!-- Main Container -->
+    <div class="container">
+      <!-- Header -->
+      <header class="header">
+        <h1>🔒 Biometric Fingerprint System</h1>
+        <p>Professional fingerprint management using MANTRA MFS500</p>
+      </header>
+
+      <!-- Device Status -->
+      <div class="device-status">
+        <span class="status-indicator" id="statusIndicator"></span>
+        <span id="deviceStatus">Checking device...</span>
+      </div>
+
+      <!-- Main Grid -->
+      <div class="main-grid">
+        <!-- User Registration Card -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-icon">👤</div>
+            <h2 class="card-title">Register User</h2>
+          </div>
+
+          <form id="userForm">
+            <div class="form-group">
+              <label class="form-label" for="userName">Full Name</label>
+              <input
+                type="text"
+                id="userName"
+                class="form-input"
+                placeholder="Enter full name"
+                required
+              />
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="userEmail">Email Address</label>
+              <input
+                type="email"
+                id="userEmail"
+                class="form-input"
+                placeholder="Enter email address"
+                required
+              />
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-full">
+              Register User
+            </button>
+          </form>
+        </div>
+
+        <!-- Fingerprint Enrollment Card -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-icon">📝</div>
+            <h2 class="card-title">Enroll Fingerprint</h2>
+          </div>
+
+          <form id="enrollmentForm">
+            <div class="form-group">
+              <label class="form-label" for="enrollUserSelect"
+                >Select User</label
+              >
+              <select id="enrollUserSelect" class="form-select" required>
+                <option value="">Select a user</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="fingerSelect"
+                >Finger Position</label
+              >
+              <select id="fingerSelect" class="form-select" required>
+                <option value="">Select finger position</option>
+              </select>
+            </div>
+
+            <!-- Fingerprint Preview -->
+            <div class="fingerprint-preview" id="fingerprintPreview">
+              <div class="fingerprint-icon">🔒</div>
+              <p>No fingerprint captured</p>
+            </div>
+
+            <!-- Hidden fields for captured data -->
+            <input type="hidden" id="capturedTemplate" />
+            <input type="hidden" id="capturedQuality" />
+
+            <button
+              type="button"
+              id="captureBtn"
+              class="btn btn-secondary btn-full mb-1"
+            >
+              📷 Capture Fingerprint
+            </button>
+
+            <button type="submit" class="btn btn-success btn-full">
+              Enroll Fingerprint
+            </button>
+          </form>
+        </div>
+
+        <!-- Fingerprint Verification Card -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-icon">✓</div>
+            <h2 class="card-title">Verify Fingerprint</h2>
+          </div>
+
+          <form id="verificationForm">
+            <div class="form-group">
+              <label class="form-label" for="verifyUserSelect"
+                >Select User to Verify</label
+              >
+              <select id="verifyUserSelect" class="form-select" required>
+                <option value="">Select a user</option>
+              </select>
+            </div>
+
+            <!-- Verification Preview -->
+            <div class="fingerprint-preview" id="verifyPreview">
+              <div class="fingerprint-icon">🔍</div>
+              <p>No fingerprint captured</p>
+            </div>
+
+            <!-- Hidden field for verification template -->
+            <input type="hidden" id="verifyTemplate" />
+
+            <button
+              type="button"
+              id="verifyCaptureBtn"
+              class="btn btn-secondary btn-full mb-1"
+            >
+              📷 Capture Fingerprint
+            </button>
+
+            <button type="submit" class="btn btn-primary btn-full">
+              Verify Fingerprint
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <!-- User List Card -->
+      <div class="card" style="margin-top: var(--spacing-lg)">
+        <div class="card-header">
+          <div class="card-icon">📋</div>
+          <h2 class="card-title">Registered Users</h2>
+        </div>
+
+        <div id="userList" class="user-list">
+          <p style="text-align: center; color: var(--text-muted)">
+            Loading users...
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="/js/device.js"></script>
+    <script src="/js/app.js"></script>
+  </body>
+</html>

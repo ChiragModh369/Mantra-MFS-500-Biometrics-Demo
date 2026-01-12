@@ -1,0 +1,10 @@
+C:\Users\Henry.Roy.MANTRA\Desktop\MorFin_Auth_DotNet_SDK_1.1.0.0\MorFin_Auth_DotNet_SDK_1.1.0.0\sample\MorFin_Auth_CSharp\bin\x64\Debug\MorFin_Auth_CSharp.exe.config
+C:\Users\Henry.Roy.MANTRA\Desktop\MorFin_Auth_DotNet_SDK_1.1.0.0\MorFin_Auth_DotNet_SDK_1.1.0.0\sample\Output\MorFin_Auth_CSharp.exe.config
+C:\Users\Henry.Roy.MANTRA\Desktop\MorFin_Auth_DotNet_SDK_1.1.0.0\MorFin_Auth_DotNet_SDK_1.1.0.0\sample\Output\MorFin_Auth_CSharp.exe
+C:\Users\Henry.Roy.MANTRA\Desktop\MorFin_Auth_DotNet_SDK_1.1.0.0\MorFin_Auth_DotNet_SDK_1.1.0.0\sample\Output\MorFin_Auth_CSharp.pdb
+C:\Users\Henry.Roy.MANTRA\Desktop\MorFin_Auth_DotNet_SDK_1.1.0.0\MorFin_Auth_DotNet_SDK_1.1.0.0\sample\MorFin_Auth_CSharp\obj\x64\Debug\MorFin_Auth_CSharp.frmSDK.resources
+C:\Users\Henry.Roy.MANTRA\Desktop\MorFin_Auth_DotNet_SDK_1.1.0.0\MorFin_Auth_DotNet_SDK_1.1.0.0\sample\MorFin_Auth_CSharp\obj\x64\Debug\MorFin_Auth_CSharp.Properties.Resources.resources
+C:\Users\Henry.Roy.MANTRA\Desktop\MorFin_Auth_DotNet_SDK_1.1.0.0\MorFin_Auth_DotNet_SDK_1.1.0.0\sample\MorFin_Auth_CSharp\obj\x64\Debug\MorFin_Auth_CSharp.csproj.GenerateResource.Cache
+C:\Users\Henry.Roy.MANTRA\Desktop\MorFin_Auth_DotNet_SDK_1.1.0.0\MorFin_Auth_DotNet_SDK_1.1.0.0\sample\MorFin_Auth_CSharp\obj\x64\Debug\MorFin_Auth_CSharp.exe
+C:\Users\Henry.Roy.MANTRA\Desktop\MorFin_Auth_DotNet_SDK_1.1.0.0\MorFin_Auth_DotNet_SDK_1.1.0.0\sample\MorFin_Auth_CSharp\obj\x64\Debug\MorFin_Auth_CSharp.pdb
+C:\Users\Henry.Roy.MANTRA\Desktop\MorFin_Auth_DotNet_SDK_1.1.0.0\MorFin_Auth_DotNet_SDK_1.1.0.0\sample\MorFin_Auth_CSharp\obj\x64\Debug\MorFin_Auth_CSharp.csprojResolveAssemblyReference.cache
