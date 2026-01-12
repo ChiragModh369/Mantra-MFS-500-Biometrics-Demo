@@ -143,24 +143,15 @@ function populateFingerSelect() {
 }
 
 /**
- * Show alert message
+ * Show alert message using toast notifications
  */
 function showAlert(message, type = "success") {
-  const alertContainer = document.getElementById("alertContainer");
-
-  const alert = document.createElement("div");
-  alert.className = `alert alert-${type}`;
-  alert.innerHTML = `
-    <span>${type === "success" ? "✓" : "✗"}</span>
-    <span>${message}</span>
-  `;
-
-  alertContainer.appendChild(alert);
-
-  setTimeout(() => {
-    alert.style.opacity = "0";
-    setTimeout(() => alert.remove(), 300);
-  }, 5000);
+  if (window.toast) {
+    toast.show(message, type);
+  } else {
+    // Fallback if toast not loaded
+    console.log(`[${type.toUpperCase()}] ${message}`);
+  }
 }
 
 /**
@@ -178,8 +169,9 @@ async function handleUserRegistration(e) {
     return;
   }
 
+  submitBtn.classList.add("loading");
   submitBtn.disabled = true;
-  submitBtn.innerHTML = '<span class="spinner"></span> Creating...';
+  const originalText = submitBtn.innerHTML;
 
   try {
     const response = await fetch(`${API_BASE_URL}/users`, {
@@ -203,8 +195,9 @@ async function handleUserRegistration(e) {
     console.error("Registration error:", error);
     showAlert("Failed to register user", "error");
   } finally {
+    submitBtn.classList.remove("loading");
     submitBtn.disabled = false;
-    submitBtn.innerHTML = "Register User";
+    submitBtn.innerHTML = originalText;
   }
 }
 

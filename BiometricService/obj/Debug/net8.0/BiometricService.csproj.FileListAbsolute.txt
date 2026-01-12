@@ -48,3 +48,4 @@ D:\Node\Test Biometrics Demo MFS 500\BiometricService\bin\Debug\net8.0\runtimes\
 D:\Node\Test Biometrics Demo MFS 500\BiometricService\bin\Debug\net8.0\MorFin_Auth.dll
 D:\Node\Test Biometrics Demo MFS 500\BiometricService\bin\Debug\net8.0\Morfin_Auth_Core.dll
 D:\Node\Test Biometrics Demo MFS 500\BiometricService\bin\Debug\net8.0\iengine_ansi_iso.dll
+D:\Node\Test Biometrics Demo MFS 500\BiometricService\obj\Debug\net8.0\BiometricService.sourcelink.json

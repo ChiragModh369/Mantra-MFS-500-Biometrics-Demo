@@ -1,6 +1,17 @@
 ############################
-# Node / JavaScript
+# Node.js / JavaScript
 ############################
+
+# Dependencies
+node_modules/
+jspm_packages/
+bower_components/
+
+# Build outputs
+dist/
+build/
+.out/
+*.tgz
 
 # Logs
 logs/
@@ -10,11 +21,8 @@ yarn-debug.log*
 yarn-error.log*
 lerna-debug.log*
 
-# Diagnostic reports
-report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
-
 # Runtime data
-pids
+pids/
 *.pid
 *.seed
 *.pid.lock
@@ -22,80 +30,227 @@ pids
 # Coverage
 coverage/
 *.lcov
-.nyc_output
-
-# Dependency directories
-node_modules/
-jspm_packages/
-bower_components/
-web_modules/
-
-# Build outputs
-dist/
-build/
-build/Release
-.out
-.next
-.nuxt
-.vuepress/dist
-.svelte-kit/
-**/.vitepress/dist
-.docusaurus
+.nyc_output/
 
 # Cache
-.cache
-.parcel-cache
-.grunt
-.fusebox
-.serverless/
-.dynamodb/
-.firebase/
-.temp
+.cache/
+.parcel-cache/
+.npm/
+.eslintcache/
+.stylelintcache/
+.node_repl_history
 
-# TypeScript
-*.tsbuildinfo
-
-# Package files
-*.tgz
-.yarn-integrity
-
-############################
-# Environment
-############################
+# Environment variables
 .env
 .env.*
 !.env.example
 
 ############################
-# Databases
+# .NET / C#
 ############################
-*.sqlite
-*.db
+
+# Build results
+[Dd]ebug/
+[Dd]ebugPublic/
+[Rr]elease/
+[Rr]eleases/
+x64/
+x86/
+[Aa][Rr][Mm]/
+[Aa][Rr][Mm]64/
+bld/
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+[Ll]ogs/
+
+# Visual Studio cache/options
+.vs/
+.vscode/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+*.userprefs
+
+# ReSharper
+_ReSharper*/
+*.[Rr]e[Ss]harper
+*.DotSettings.user
+
+# NuGet
+*.nupkg
+*.snupkg
+**/packages/*
+!**/packages/build/
+*.nuget.props
+*.nuget.targets
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+# Test results
+[Tt]est[Rr]esult*/
+[Bb]uild[Ll]og.*
+*.trx
+*.coverage
+*.coveragexml
 
 ############################
-# IDE / OS
+# Database
 ############################
+
+# SQLite
+*.db
+*.db-shm
+*.db-wal
+*.sqlite
+*.sqlite3
+database/*.db
+database/*.sqlite
+
+# Keep database directory
+!database/.gitkeep
+
+############################
+# IDE / Editors
+############################
+
+# Visual Studio Code
 .vscode/
+!.vscode/extensions.json
+!.vscode/launch.json
+!.vscode/settings.json
+
+# Visual Studio
+.vs/
 .idea/
-.vscode-test
+
+# JetBrains
 *.swp
 *.swo
-.DS_Store
-Thumbs.db
+*~
+
+# Sublime Text
+*.sublime-workspace
+*.sublime-project
 
 ############################
-# Yarn v3
+# OS
 ############################
-.pnp.*
+
+# Windows
+[Tt]humbs.db
+[Tt]humbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+*.stackdump
+[Dd]esktop.ini
+$RECYCLE.BIN/
+*.lnk
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+.Spotlight-V100
+.Trashes
+
+# Linux
+*~
+.directory
+.Trash-*
+
+############################
+# Project Specific
+############################
+
+# Mantra SDK native DLLs (copied from system)
+# Keep the SDK reference DLL but ignore copied system DLLs
+BiometricService/bin/**/Morfin_Auth_Core.dll
+BiometricService/bin/**/iengine_ansi_iso.dll
+BiometricService/bin/**/WudfUpdate_01011.dll
+
+# SDK sample code (already in SDK folder)
+BiometricService/MorFin_Auth_DotNet_SDK_1.1.0.0/sample/**/*.exe
+BiometricService/MorFin_Auth_DotNet_SDK_1.1.0.0/sample/**/bin/
+BiometricService/MorFin_Auth_DotNet_SDK_1.1.0.0/sample/**/obj/
+
+# User uploads (if any)
+uploads/
+temp/
+
+# Compiled static files
+public/dist/
+public/build/
+
+############################
+# Security
+############################
+
+# API keys and secrets
+*.key
+*.pem
+*.p12
+*.pfx
+secrets.json
+appsettings.*.json
+!appsettings.json
+!appsettings.Development.json
+
+# SSL certificates
+*.crt
+*.cer
+
+############################
+# Temporary Files
+############################
+
+*.tmp
+*.temp
+*.bak
+*.backup
+*~
+.#*
+
+############################
+# Documentation Build
+############################
+
+# Documentation sites
+docs/_build/
+site/
+
+############################
+# Package Files
+############################
+
+*.7z
+*.dmg
+*.gz
+*.iso
+*.jar
+*.rar
+*.tar
+*.zip
+
+############################
+# Other
+############################
+
+# TypeScript
+*.tsbuildinfo
+
+# Yarn
 .yarn/*
 !.yarn/patches
 !.yarn/plugins
 !.yarn/releases
 !.yarn/sdks
 !.yarn/versions
+.pnp.*
 
-############################
 # Vite
-############################
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
