@@ -55,7 +55,6 @@ router.get("/device-info", async (req, res, next) => {
 router.get("/device-status", async (req, res, next) => {
   try {
     const status = await biometricService.isDeviceConnected();
-    console.log("device status", status);
     res.status(200).json(status);
   } catch (error) {
     next(error);

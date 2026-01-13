@@ -41,6 +41,12 @@ document.addEventListener("DOMContentLoaded", async () => {
   app.deviceConnected = await device.initialize();
   updateDeviceStatus();
 
+  // Listen for real-time device status changes
+  device.onStatusChange((status) => {
+    app.deviceConnected = status.status === "connected";
+    updateDeviceStatus();
+  });
+
   // Populate finger select options
   populateFingerSelect();
 
@@ -51,6 +57,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   setupEventListeners();
 
   console.log("✓ Application initialized");
+  console.log("✓ Real-time device monitoring enabled");
 });
 
 /**

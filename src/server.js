@@ -7,6 +7,8 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const path = require("path");
+const http = require("http");
+const { Server } = require("socket.io");
 require("dotenv").config();
 
 const { testConnection } = require("./models");
@@ -16,6 +18,15 @@ const fingerprintRoutes = require("./routes/fingerprint.routes");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+// Create HTTP server for socket.io integration
+const httpServer = http.createServer(app);
+const io = new Server(httpServer, {
+  cors: {
+    origin: "*",
+    methods: ["GET", "POST"],
+  },
+});
 
 // Middleware
 app.use(cors());
@@ -52,6 +63,48 @@ app.use(notFoundHandler);
 // Error handling middleware (must be last)
 app.use(errorHandler);
 
+// WebSocket connection handling
+const biometricService = require("./services/biometric.service");
+
+let deviceStatusCache = {
+  status: "unknown",
+  message: "Checking device...",
+  lastChecked: null,
+};
+
+// Function to check device status and broadcast to all clients
+const checkAndBroadcastDeviceStatus = async () => {
+  try {
+    const status = await biometricService.isDeviceConnected();
+    const newStatus = {
+      ...status,
+      lastChecked: new Date().toISOString(),
+    };
+
+    // Only broadcast if status changed or this is first check
+    if (
+      !deviceStatusCache.lastChecked ||
+      deviceStatusCache.status !== newStatus.status
+    ) {
+      deviceStatusCache = newStatus;
+      io.emit("device-status", deviceStatusCache);
+    } else {
+      deviceStatusCache = newStatus;
+    }
+  } catch (error) {
+    console.error("Error checking device status:", error.message);
+  }
+};
+
+io.on("connection", (socket) => {
+  // Send current device status immediately to new client
+  socket.emit("device-status", deviceStatusCache);
+
+  socket.on("disconnect", () => {
+    // Client disconnected
+  });
+});
+
 // Start server
 const startServer = async () => {
   try {
@@ -69,13 +122,20 @@ const startServer = async () => {
     }
 
     // Start listening
-    app.listen(PORT, () => {
+    httpServer.listen(PORT, () => {
       console.log("\n=================================");
       console.log(`✓ Server running on port ${PORT}`);
       console.log(`✓ Environment: ${process.env.NODE_ENV || "development"}`);
       console.log(`✓ API URL: http://localhost:${PORT}/api`);
       console.log(`✓ Web App: http://localhost:${PORT}`);
+      console.log(`✓ WebSocket: enabled`);
       console.log("=================================\n");
+
+      // Start periodic device status monitoring (every 3 seconds)
+      setInterval(checkAndBroadcastDeviceStatus, 3000);
+
+      // Initial device status check
+      checkAndBroadcastDeviceStatus();
     });
   } catch (error) {
     console.error("Failed to start server:", error.message);

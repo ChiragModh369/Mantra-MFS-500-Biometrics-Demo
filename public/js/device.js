@@ -15,6 +15,64 @@ class BiometricDevice {
     };
     this.timeout = 30000;
     this.apiBaseUrl = window.location.origin + "/api";
+    this.eventListeners = [];
+
+    // Initialize WebSocket connection
+    this.initializeWebSocket();
+  }
+
+  /**
+   * Initialize WebSocket connection for real-time device status updates
+   */
+  initializeWebSocket() {
+    if (typeof io === "undefined") {
+      console.warn("Socket.io client not loaded");
+      return;
+    }
+
+    this.socket = io(window.location.origin);
+
+    this.socket.on("connect", () => {
+      // WebSocket connected
+    });
+
+    this.socket.on("device-status", (status) => {
+      // Update internal state
+      this.connectionState = status;
+      this.isConnected = status.status === "connected";
+
+      // Notify listeners of status change
+      this.notifyStatusChange();
+    });
+
+    this.socket.on("disconnect", () => {
+      // WebSocket disconnected
+    });
+
+    this.socket.on("reconnect", () => {
+      // WebSocket reconnected
+    });
+  }
+
+  /**
+   * Add listener for device status changes
+   * @param {Function} callback - Callback function to be called on status change
+   */
+  onStatusChange(callback) {
+    this.eventListeners.push(callback);
+  }
+
+  /**
+   * Notify all listeners of status change
+   */
+  notifyStatusChange() {
+    this.eventListeners.forEach((callback) => {
+      try {
+        callback(this.connectionState);
+      } catch (error) {
+        console.error("Error in status change listener:", error);
+      }
+    });
   }
 
   /**
