@@ -13,7 +13,12 @@ module.exports = {
     host: process.env.DB_HOST || "localhost",
     port: parseInt(process.env.DB_PORT) || 3306,
     dialect: "mysql",
-    logging: console.log,
+    // logging: console.log,
+    logging: (msg) => {
+      if (msg.includes("ERROR")) {
+        console.error(msg);
+      }
+    },
     pool: {
       max: 10,
       min: 0,
