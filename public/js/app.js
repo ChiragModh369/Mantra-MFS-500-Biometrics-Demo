@@ -88,6 +88,46 @@ function setupEventListeners() {
   document
     .getElementById("verifyCaptureBtn")
     .addEventListener("click", captureFingerprintForVerification);
+
+  // User selection change - update available fingers
+  document
+    .getElementById("enrollUserSelect")
+    .addEventListener("change", handleEnrollUserChange);
+}
+
+/**
+ * Handle user selection change in enrollment form
+ * Update finger dropdown to show only unenrolled fingers
+ */
+async function handleEnrollUserChange(e) {
+  const userId = e.target.value;
+  const fingerSelect = document.getElementById("fingerSelect");
+
+  if (!userId) {
+    // No user selected, show all fingers
+    populateFingerSelect();
+    return;
+  }
+
+  try {
+    // Fetch user's enrolled fingerprints
+    const response = await fetch(`${API_BASE_URL}/fingerprints/user/${userId}`);
+    const data = await response.json();
+
+    if (data.success && data.data.fingerprints) {
+      const enrolledFingers = data.data.fingerprints.map(
+        (fp) => fp.finger_name
+      );
+      populateFingerSelect(enrolledFingers);
+    } else {
+      // No fingerprints enrolled yet, show all
+      populateFingerSelect();
+    }
+  } catch (error) {
+    console.error("Error fetching user fingerprints:", error);
+    // On error, show all fingers
+    populateFingerSelect();
+  }
 }
 
 /**
@@ -136,12 +176,25 @@ function updateDeviceStatus() {
 
 /**
  * Populate finger select dropdown
+ * @param {Array} enrolledFingers - Array of already enrolled finger names for the user
  */
-function populateFingerSelect() {
+function populateFingerSelect(enrolledFingers = []) {
   const select = document.getElementById("fingerSelect");
   select.innerHTML = '<option value="">Select finger position</option>';
 
-  FINGER_POSITIONS.forEach((finger) => {
+  // Filter out already enrolled fingers
+  const availableFingers = FINGER_POSITIONS.filter(
+    (finger) => !enrolledFingers.includes(finger)
+  );
+
+  if (availableFingers.length === 0) {
+    select.innerHTML = '<option value="">All fingers enrolled</option>';
+    select.disabled = true;
+    return;
+  }
+
+  select.disabled = false;
+  availableFingers.forEach((finger) => {
     const option = document.createElement("option");
     option.value = finger;
     option.textContent = finger;
@@ -413,7 +466,15 @@ async function handleFingerprintEnrollment(e) {
         '<div class="fingerprint-icon">🔒</div><p>No fingerprint captured</p>';
       await loadUsers();
     } else {
-      showAlert(data.error || data.message || "Enrollment failed", "error");
+      // Check if this is a duplicate fingerprint error
+      if (data.error === "Duplicate fingerprint detected" && data.data) {
+        showAlert(
+          `⚠️ ${data.message}\nMatch Score: ${data.data.matchScore}`,
+          "error"
+        );
+      } else {
+        showAlert(data.error || data.message || "Enrollment failed", "error");
+      }
     }
   } catch (error) {
     console.error("Enrollment error:", error);

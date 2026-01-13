@@ -22,7 +22,15 @@ const enrollFingerprint = async (req, res, next) => {
     const { userId, fingerName, templateData, qualityScore } = req.body;
 
     // Verify user exists
-    const user = await User.findByPk(userId);
+    const user = await User.findByPk(userId, {
+      include: [
+        {
+          model: Fingerprint,
+          as: "fingerprints",
+          attributes: ["id", "finger_name", "template_data"],
+        },
+      ],
+    });
 
     if (!user) {
       return res.status(HTTP_STATUS.NOT_FOUND).json({
@@ -38,6 +46,39 @@ const enrollFingerprint = async (req, res, next) => {
         error: ERROR_MESSAGES.LOW_QUALITY,
         message: `Quality score ${qualityScore} is below minimum threshold of ${QUALITY_THRESHOLDS.MINIMUM}`,
       });
+    }
+
+    // DUPLICATE DETECTION: Check if this fingerprint is already enrolled under a different finger name
+    if (user.fingerprints && user.fingerprints.length > 0) {
+      const biometricService = require("../services/biometric.service");
+
+      for (const existingFingerprint of user.fingerprints) {
+        try {
+          const matchResult = await biometricService.verifyFingerprint(
+            templateData,
+            existingFingerprint.template_data
+          );
+
+          // If match score is high (>= 80), this is the same finger
+          if (matchResult.success && matchResult.isMatch) {
+            return res.status(HTTP_STATUS.CONFLICT).json({
+              success: false,
+              error: "Duplicate fingerprint detected",
+              message: `This fingerprint is already enrolled as "${existingFingerprint.finger_name}". Please use a different finger.`,
+              data: {
+                existingFingerName: existingFingerprint.finger_name,
+                matchScore: matchResult.matchScore,
+              },
+            });
+          }
+        } catch (verifyError) {
+          // Log but continue if individual verification fails
+          console.error(
+            `Error verifying against ${existingFingerprint.finger_name}:`,
+            verifyError.message
+          );
+        }
+      }
     }
 
     // Create fingerprint (unique constraint will prevent duplicates)
@@ -60,7 +101,7 @@ const enrollFingerprint = async (req, res, next) => {
     });
   } catch (error) {
     // Handle Sequelize unique constraint error
-    if (error.name === "SequelizeUniqueConstraintError") {
+    if (error.name === "Sequelize UniqueConstraintError") {
       return res.status(HTTP_STATUS.CONFLICT).json({
         success: false,
         error: "Fingerprint already enrolled",
