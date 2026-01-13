@@ -91,10 +91,26 @@ namespace BiometricService.Services
         /// <summary>
         /// Initialize device if not already initialized
         /// </summary>
-        private bool EnsureDeviceInitialized()
+        private bool EnsureDeviceInitialized(bool forceReinit = false)
         {
             lock (_lockObject)
             {
+                // If force re-init requested, uninitialize first
+                if (forceReinit && _isInitialized)
+                {
+                    try
+                    {
+                        _logger.LogWarning("Force re-initialization requested, uninitializing device first");
+                        _morFinAuth?.Uninit();
+                        _isInitialized = false;
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.LogError(ex, "Error during forced uninitialization");
+                        _isInitialized = false;
+                    }
+                }
+
                 if (_isInitialized)
                 {
                     return true;
@@ -129,6 +145,17 @@ namespace BiometricService.Services
                     _logger.LogError(ex, "Error initializing device");
                     return false;
                 }
+            }
+        }
+
+        /// <summary>
+        /// Reset device initialization state
+        /// </summary>
+        private void ResetDeviceState()
+        {
+            lock (_lockObject)
+            {
+                _isInitialized = false;
             }
         }
 
@@ -224,6 +251,15 @@ namespace BiometricService.Services
                 };
             }
 
+            // Try capture, with automatic retry on device initialization failure
+            return await AttemptCaptureWithRetry(request, retryCount: 1);
+        }
+
+        /// <summary>
+        /// Attempt capture with automatic retry on initialization failures
+        /// </summary>
+        private async Task<CaptureResponse> AttemptCaptureWithRetry(CaptureRequest request, int retryCount)
+        {
             try
             {
                 if (!EnsureDeviceInitialized())
@@ -244,11 +280,26 @@ namespace BiometricService.Services
                 int qualityThreshold = request.Quality > 0 ? request.Quality : _defaultQuality;
 
                 // Use AutoCapture for automatic quality-based capture
-                int ret = await Task.Run(() => _morFinAuth.AutoCapture(out quality, out nfiq, timeout, qualityThreshold));
+                int ret = await Task.Run(() => _morFinAuth!.AutoCapture(out quality, out nfiq, timeout, qualityThreshold));
 
                 if (ret != 0)
                 {
                     string errorMsg = _morFinAuth.GetErrDescription(ret);
+                    
+                    // Check if error is due to device not being initialized
+                    if (errorMsg.Contains("not initialized", StringComparison.OrdinalIgnoreCase) && retryCount > 0)
+                    {
+                        _logger.LogWarning($"Device initialization lost, attempting automatic recovery (retries left: {retryCount})");
+                        ResetDeviceState();
+                        
+                        // Force re-initialization and retry
+                        if (EnsureDeviceInitialized(forceReinit: true))
+                        {
+                            _logger.LogInformation("Device re-initialized successfully, retrying capture");
+                            return await AttemptCaptureWithRetry(request, retryCount - 1);
+                        }
+                    }
+
                     _logger.LogError($"Capture failed: {errorMsg}");
                     return new CaptureResponse
                     {
@@ -293,6 +344,19 @@ namespace BiometricService.Services
             }
             catch (Exception ex)
             {
+                // On exception, try one more time with force re-init if retries available
+                if (retryCount > 0 && (ex.Message.Contains("not initialized", StringComparison.OrdinalIgnoreCase) ||
+                                       ex.Message.Contains("device", StringComparison.OrdinalIgnoreCase)))
+                {
+                    _logger.LogWarning(ex, $"Exception during capture, attempting recovery (retries left: {retryCount})");
+                    ResetDeviceState();
+                    
+                    if (EnsureDeviceInitialized(forceReinit: true))
+                    {
+                        return await AttemptCaptureWithRetry(request, retryCount - 1);
+                    }
+                }
+
                 _logger.LogError(ex, "Error capturing fingerprint");
                 return new CaptureResponse
                 {
