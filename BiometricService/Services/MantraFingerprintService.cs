@@ -110,7 +110,7 @@ namespace BiometricService.Services
                     }
 
                     _deviceInfo = new FINGER_DEVICE_INFO();
-                    int ret = _morFinAuth.Init(_deviceName, ref _deviceInfo, _clientKey);
+                    int ret = _morFinAuth!.Init(_deviceName, ref _deviceInfo, _clientKey);
 
                     if (ret == 0)
                     {
@@ -259,7 +259,7 @@ namespace BiometricService.Services
                 }
 
                 // Get template data
-                byte[] templateData = null;
+                byte[]? templateData = null;
                 TEMPLATE_FORMAT templateFormat = TEMPLATE_FORMAT.FMR_V2005; // ISO format
 
                 ret = _morFinAuth.GetTemplate(out templateData, templateFormat, 5);
@@ -274,11 +274,11 @@ namespace BiometricService.Services
                 }
 
                 // Get bitmap image
-                byte[] bitmapData = null;
+                byte[]? bitmapData = null;
                 ret = _morFinAuth.GetImage(out bitmapData, IMAGE_FORMAT.BMP, 5);
 
-                string templateBase64 = templateData != null ? Convert.ToBase64String(templateData) : null;
-                string bitmapBase64 = bitmapData != null ? Convert.ToBase64String(bitmapData) : null;
+                string? templateBase64 = templateData != null ? Convert.ToBase64String(templateData) : null;
+                string? bitmapBase64 = bitmapData != null ? Convert.ToBase64String(bitmapData) : null;
 
                 _logger.LogInformation($"Capture successful - Quality: {quality}, NFIQ: {nfiq}");
 
